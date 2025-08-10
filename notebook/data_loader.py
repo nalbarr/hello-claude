@@ -73,7 +73,9 @@ class EcommerceDataLoader:
             if col in orders.columns:
                 orders[col] = pd.to_datetime(orders[col])
         
-        # Extract date components
+        # Extract date components for compatibility with business_metrics.py
+        orders['year'] = orders['order_purchase_timestamp'].dt.year
+        orders['month'] = orders['order_purchase_timestamp'].dt.month
         orders['purchase_year'] = orders['order_purchase_timestamp'].dt.year
         orders['purchase_month'] = orders['order_purchase_timestamp'].dt.month
         orders['purchase_date'] = orders['order_purchase_timestamp'].dt.date
@@ -136,7 +138,7 @@ class EcommerceDataLoader:
         sales_data = sales_data.merge(
             self.processed_data['orders'][['order_id', 'customer_id', 'order_status', 
                                          'order_purchase_timestamp', 'order_delivered_customer_date',
-                                         'purchase_year', 'purchase_month']],
+                                         'purchase_year', 'purchase_month', 'year', 'month']],
             on='order_id',
             how='left'
         )
